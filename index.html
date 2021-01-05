@@ -1,0 +1,30 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Faces</title>
+  </head>
+  <body>
+    <label for="urlInput">Ingresa una url de una imagen:</label><br />
+    <input type="text" id="urlInput" /><br /><br />
+    <button onclick="sendImage()">Enviar</button>
+    <p id="response">as</p>
+  </body>
+</html>
+
+<script>
+  function sendImage() {
+    let url = document.getElementById("urlInput").value;
+
+    console.log(url);
+
+    fetch("http://127.0.0.1:3000/getEmotions?url=" + url)
+      .then((response) => {
+        return response.json();
+      })
+      .then((data) => {
+        console.log(data);
+        document.getElementById("response").innerHTML = data;
+      });
+  }
+</script>
