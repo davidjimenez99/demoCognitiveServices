@@ -5,26 +5,79 @@
     <title>Faces</title>
   </head>
   <body>
+    <label for="urlInput">Cargar imagen:</label><br />
+    <input type="file" id="fileInput" accept=".jpg, .jpeg, .png" /><br /><br />
+    <button id="file" onclick="sendImage(this.id)">Submit</button
+    ><br /><br /><br />
+
     <label for="urlInput">Ingresa una url de una imagen:</label><br />
     <input type="text" id="urlInput" /><br /><br />
-    <button onclick="sendImage()">Enviar</button>
-    <p id="response">as</p>
+    <button id="url" onclick="sendImage(this.id)">Enviar</button>
+    <p id="response"></p>
   </body>
 </html>
 
 <script>
-  function sendImage() {
-    let url = document.getElementById("urlInput").value;
+  function sendImage(id) {
+    if (id == "url") {
+      let url = document.getElementById("urlInput").value;
 
-    console.log(url);
+      console.log(url);
 
-    fetch("http://127.0.0.1:3000/getEmotions?url=" + url)
-      .then((response) => {
-        return response.json();
-      })
-      .then((data) => {
-        console.log(data);
+      fetch("http://127.0.0.1:3000/getEmotions?url=" + url)
+        .then((response) => {
+          return response.json();
+        })
+        .then((data) => {
+          console.log(data);
+          document.getElementById("response").innerHTML = data;
+        });
+    } else {
+      getImage().then(
+        function (response) {
+          console.log(response);
+          fetch("http://127.0.0.1:3000/getEmotions?url=" + response)
+            .then((response) => {
+              return response.json();
+            })
+            .then((data) => {
+              console.log(data);
+              document.getElementById("response").innerHTML = data;
+            });
+        },
+        function (error) {
+          console.error("Failed!", error);
+        }
+      );
+    }
+  }
+
+  function getImage() {
+    return new Promise((resolve, reject) => {
+      var reader = new FileReader();
+      var f = document.getElementById("fileInput").files;
+
+      let data;
+
+      reader.onload = function () {
+        data = reader.result;
+
+        //console.log(data);
+        //data = reader.result;
         document.getElementById("response").innerHTML = data;
-      });
+      };
+
+      reader.readAsDataURL(f[0]);
+
+      resolve(data);
+    });
+
+    //let data = reader.readAsDataURL(f[0]);
+
+    //document.getElementById("response").innerHTML = data;
+
+    //console.log(data);
+
+    //return data;
   }
 </script>
